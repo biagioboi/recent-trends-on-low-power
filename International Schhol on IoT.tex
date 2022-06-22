@@ -1,0 +1,205 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+\documentclass[sigconf]{acmart}
+\captionsetup{font=footnotesize}
+\usepackage{graphicx}
+
+\settopmatter{printacmref=false} % Removes citation i	nformation below abstract
+\renewcommand\footnotetextcopyrightpermission[1]{} % removes footnote with conference information in first column
+%%\pagestyle{plain} % removes running headers
+\thispagestyle{empty}
+%%
+%% \BibTeX command to typeset BibTeX logo in the docs
+\AtBeginDocument{%
+    \providecommand\BibTeX{{%
+        \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+
+\setcopyright{none}
+\copyrightyear{}
+\acmYear{}
+\acmDOI{}
+
+\acmConference[Computer Science]{}{University of Salerno}{UNISA}
+\acmBooktitle{A survey on recent trends in Low-power Wireless Networking for the Internet of Things}
+\acmPrice{}
+\acmISBN{}
+
+\begin{document}
+
+    \title{A survey on recent trends in Low-power Wireless Networking for the Internet of Things}
+
+    \author{Biagio Boi}
+    \email{b.boi@studenti.unisa.it}
+        \affiliation{
+        \institution{Universit\'a degli studi di Salerno}
+        \streetaddress{}
+        \city{Salerno}
+        \state{}
+        \country{Italy}
+        \postcode{}
+    }
+
+   
+
+    \begin{teaserfigure}
+        \rule{\linewidth}{1mm}
+%%  \includegraphics[width=\textwidth]{sampleteaser}
+%%  \caption{Insert text here}
+%%  \Description{insert description here}
+%%  \label{fig:teaser}
+    \end{teaserfigure}
+
+%%
+%% This command processes the author and affiliation and title
+%% information and builds the first part of the formatted document.
+    \maketitle
+
+
+    \section{Introduction}
+    Over the last years, a progressive evolution of the Internet allowed the insertion of the human in the loop of the communication. 
+    
+    Initially, Internet was intended as the interconnection of all the computer available across the world; then, also mobile devices become a pervasive technology. In particular, over the last years, thanks to the technological progress, also people and objects (washing machine, car and so on) have been involved in this world, creating the so called \textit{Internet of Things - IoT}. 
+    
+    There are many challenges in the context of IoT that need to be addressed; one above all is related to the power consumption of the network. This survey will focus on this aspect, by considering recent trends in low power networking; in the second section we will discuss about networking; the survey ends with some reflections and considerations about all the technologies.
+    
+    \subsection{IoT Definition and Applications}
+    There are different definition of Internet of Things, following the definition given by Dorsemaine, et al. \cite{dorsemaine} it is a group of infrastructures interconnecting connected objects and allowing their management, data mining and the access to the data they generate. Different IoT use cases exist:
+    \begin{itemize}
+    \item \textbf{Smart Cities}: introduction of many sensors in the cities in order to detect pollution or implement parking system, and other useful applications that simplify everyday life;
+    \item \textbf{Industrial IoT - IIoT}: which is about the connection of all the industrial assets, including machines and control system, with the information systems and the business processes \cite{sisinni};
+    \item \textbf{Localization}: introduction of beacons in order to detect when an user is in proximity to objects (e.g. {\itshape Apple iBeacon}) or indoor localization by using same wireless technologies used for communication.
+    \item \textbf{Smart Health Care}: integrate IoT features to medical devices is improving the quality of the services to the patients. As introduced by Sobin \cite{sobin}, IoT can be used to monitor old people for fall detection, to monitor temperature conditions inside refrigerator, which stores medicines, vaccines, and to monitor the patient’s condition in hospitals and home.
+    \end{itemize}
+    There are bouches of fields of application, the latest examples can be retrieved in resolution of problems related to the Covid-19 pandemic, with the use of various technologies to prevent the diffusion and improve the vaccines delivery.
+    
+    \subsection{IoT Architecture}
+    Before go deeper with the communication protocols that aim at reducing power consumption, it's important to clarify the overall system in order to better understand the following sections. There are different ways to implement the architecture for an Internet of Things system, the most used and general one is composed by three "layers", each with its own component:
+    \begin{itemize}
+     \item \textbf{Sensors / Actuators}: here we find devices, machines, people and every objet that we can transform into a smart object. 
+      \item \textbf{Internet gateways, Data acquisition Systems}: at this layer we find also all the devices needed for the communications such as gateways and data acquisition systems; in particular, some of those systems are able to compute, analyze and process data directly at this level, creating the so called "Edge Computing". Those data which cannot be processed locally will be transferred to the cloud. Our study will focus on this layer, by analyzing some communication protocol that aim at reducing the power consumptions and optimizing the communication in terms of throughput and reliability. 
+        \item \textbf{Data Center / Cloud}: when the gateways cannot compute the data directly, it's needed the help of the cloud on something external to the network. There are a lot of solutions that can be taken here, just thinking about \textit{Amazon AWS} or \textit{Microsoft Azure}; we will not go deeper here since we will focus on the communication protocols; some references to these services can be found at the end of the survey.
+    \end{itemize}
+    As anticipated in the discussion on the second layer, some devices may implement business logic directly on board. In particular there are three kind of communication between devices and cloud: cellphone based (where the device directly communicate with the cloud and the business logic is deployed here), edge computing (where the devices communicate with a gateway, which implement the business logic and is in charged of communicate with the cloud) and sensor network (where the devices communicate among each other and the business logic is deployed locally; them communicate with the cloud when needed). The choice of one strategy instead of another is context dependent, not always one choice is better than another.
+    \begin{figure}[h!]
+        \includegraphics[width=0.8\linewidth]{img/networking.png}
+        \caption{Different flaws of networking}
+        \label{fig:networking}
+    \end{figure}
+    \section{Networking}
+    After introduced the context of our survey, we will now discuss on how handle with communication between devices and gateways using Low-power Wireless Technology. As it's possible to see after, there are bouches of motivation that drive us to improve this communication. Once clarified the motivation we will introduce and discuss about three main protocols: IEEE 802.15.4, Bluetooth Low Energy (BLE) and Low Power Wide Area Network (LPWAN); all those three protocols aim at reducing power consumption with completely different technologies. We will end the discussion about networking talking about a newest component which aims at reduce the power consumption that could be integrated in almost all protocols - Wake-up Radio (WUR) - and another protocol that aim at harvest energy directly from the connection.
+    \subsection{Enablers}
+    The major IoT challenges are related to the nature of the smart objects; most of them have a lot of constraints related to the battery and to the critical environment in which they are placed. In order to handle with this problems is important to understand where is possible to act and how. Since the communication is the most power consuming activity of a sensor, a good communication protocol can prevent the energy draining; as shown by Mahmoud and Auday \cite{mahmoud} the choice of module for each protocol plays a vital role in battery life due to the difference of power consumption for each module/protocol. So, the evaluation of protocols with each other depends on the module used.
+    \subsection{802.15.4}
+    IEEE 802.15.4 is a technical standard which defines the operation of a low-rate wireless personal area network (LR-WPAN). It is adopted by several standard, such as ZigBee, WirelessHart, the IETF network stack and others. It specifies both physical and  and Media Access Control (MAC) layer for LR-WPANs:
+    \begin{itemize}
+    \item \textbf{Physical layer}: as we already know, this layer is the bottom layer in the OSI reference model, and protocols transmit packets using it. There are three possible unlicensed frequency bands:
+    \begin{itemize}
+    \item 868.0–868.6 MHz: Europe, allows one communication channel (2003, 2006, 2011);
+    \item 902–928 MHz: North America, originally allowed up to ten channels (2003), but since has been extended to thirty (2006);
+    \item 2400–2483.5 MHz: worldwide use, up to sixteen channels (2003, 2006) - this one is that one used for the traditional wireless transmission.
+    \end{itemize}
+    Starting from 2011, a lot of improved versions of the protocol have been released, like the Ultra-wideband (UWB), 
+    \item \textbf{MAC layer}: the MAC enables the transmission of MAC frames through the use of physical channel, including controls on frame validation and time slots. Since it doesn't exchange Ethernet packets, it is a little bit different from 802.1, following the specification given in the documentation \cite{802_15_4}.
+    \begin{figure}[h!]
+        \includegraphics[width=0.8\linewidth]{img/gen_mac_frame_format.png}
+        \caption{Generic MAC frame format}
+        \label{fig:gen_mac_frame_format}
+    \end{figure}
+    Considering the challenges put in place from IoT, we have to remember that low-power links are usually unstable; for this reason, at MAC layer we can apply some techniques which are able to handle with this problem:
+    \begin{itemize}
+    \item \textbf{Low Power Listening - LPL}: as explained into the article by Polastre et al. \cite{polastre}, each time the node wakes up, it turns on the radio and checks for activity. If activity is detected, the node powers up and stays awake for the time required to receive the incoming packet. After reception, the node returns to sleep. If no packet is
+received (a false positive), a timeout forces the node back to sleep. This solution could be a good solution to the problem of draining energy but also in this case there is a cons, as explained by Mo Sha et al. \cite{sha_mo} LPL is highly susceptible to false wakeups caused by environmental noise being detected as activity on the channel, causing nodes to spuriously wakeup in order to receive nonexistent transmissions.
+	\item \textbf{Time Slotted Channel Hopping - TSCH}: in order to mitigate the problem of poor stability of the channels caused by periodic change of the operating frequency, this new channel access method has been proposed. The assignment of communication slots is based on time and frequency channel; in this way different transmissions on different channels do not interfere, guaranteeing a good level of parallelism. Furthermore, if a transmission fails on a noisy channel, its re-transmission may succeed on a clear one, guaranteeing reliability. 
+	There are a lot of related and evolution works, the most interesting one seems to be the Adaptive TSCH (A-TSCH)\cite{du}, which is able to hop selectively among a subset of channels considered "reliable", unlike the IEEE 802.15.4e TSCH which indiscriminately uses all 16 channels in the 2.4 GHz band; guaranteeing an higher level of reliability and consequentially increasing the throughput.
+    \end{itemize}
+    \end{itemize}
+    
+    
+  	\subsection{Bluetooth Low Energy - BLE 4.0}
+	Before introduce BLE, it's necessary to remember its first version: Bluetooth. This technology was born in 1999 to avoid the problem of using wire in short range communication, creating in this way the Wireless Personal Area Network (WPAN). Bluetooth enables the communication among heterogeneous devices, such as smartphones, PC, printers, etc. After the first version, other two versions have been released before the current Bluetooth Low Energy or Bluetooth 4.0.
+	The main difference between versions lies in transmission speed and power consumption, in particular, BLE aims at optimizing energy efficiency and for this reason is the preferred one in the IoT context. These two challenges enables the uses of BLE for positioning systems, in particular, an important application is presented by Morgan et al. \cite{morgan}, which shows the possibility to use this technology in overcrowded environments. The results showed that location beacons have higher accuracy and are better used within very crowded environments for both proximity and distance estimations. 
+	\subsubsection{Bluetooth vs BLE 4.0}
+	Bluetooth use short-wavelength, ultra-high frequency (UHF) radio waves within the range 2.400 to 2.485 GHz, in order to reduce the interference it divides the band into 79 channels by commuting the channels using FHSS. Bluetooth Low-Energy uses the same frequency band but divides the band into 40 channels with 2 MHz spacing (3 of these channels are reserved for advertising). Another big difference lies in device discovery; classic Bluetooth requires pairing and is designed for one to one communication, BLE, instead, is projected for one to many communication without pairing.
+     \subsubsection{Bluetooth 5.0}
+     The last released evolution of Bluetooth is the version 5.0, it introduces improvement in terms of: higher data rate (up to 2MB/s), longer range (up to x4), enhanced advertising, multi-hop meshed networking and max number of nodes. According to what said by Yaakop et al. \cite{yaakop}, it is imperative that it will become popular in the smart phone devices, IoT devices and Bluetooth Beacons application.
+      \subsection{Low Power-Wide Area Network - LP-WAN}
+      LP-WAN is a new technology which introduce new tradeoffs; in particular it reduces the power consumption (typically in the order of 100mW) and extend the transmission range (1-50km); in particular, it can be seen as tradeoff between short-range transmission (802.15.4, BLE) and cellular (GSM, 3G, LTE). It spreads the energy of signal over a wide frequency band using different approaches: Direct Sequence Spread Spectrum (DSSS), Chip Spread Spectrum (CSS) - this is the case of LoRa\textup\textregistered, which has its own proprietary modulation technology -, Narrow and Ultra-Narrow Band (UNB). Different protocols are based on this technology: LoRa\textup{\textregistered}, SigFox, NB-IoT.
+      \subsubsection{SigFox}
+      SigFox was founded in 2010 with a vision to connect every object in our physical world to the digital universe; in other words, the aim is to build a global network dedicated to the Internet of Things based on low power, long range and small data that offers an end-to-end connectivity service.
+      SigFox operates using the UNB modulation, which means that each message is 100Hz wide and is transferred at 100-600 bits per second, depending on the region. The real peculiarity of this protocol is that a device is not attached to a specific base station unlike cellular networks, but each time a device have to send a message, it will broadcast the message to any base station in the range, which then process it and decide if discard or analyze and send the message.
+      This technology is a good candidate for the solution of problems related to the communication in IoT context, but we must take into account some limitations introduced by the protocol itself, in particular, the use of a UNB modulation can compromise the scalability of the system. An analysis done by Lavaric et al. \cite{lavaric}, shows  that 100 SigFox modules require at least 360 channels to simultaneously communicate without causing interference. This seems to confirm what previously said, causing the unavailability of service in very crowded environments, in which there are thousands of devices.
+      Examples of applications can be found in context for which reliability is a serious concern: street lighting, gas tank remote monitoring, smart traffic light and so on.
+      \subsubsection{NB-IoT}
+      In opposition to the technology used by SigFox, there is the Narrowband Internet of Things (NB-IoT), which is a LPWAN standard that uses a narrow band (180 or 200 kHz). This choice guarantee high reliability by decreasing the speed (250kbit/s) and the latency (1.6-10s). This technology can work in three different way: standalone GSM band,  in-band LTE band or guard-band LTE band.
+      
+      NB-IoT introduces a lot of advantages, as introduced it guarantees high performance since it doesn't share the band with other technologies; furthermore, it bears up energy efficiency thanks to the architecture - devices can stay idle and disconnected till they need to transmit data, after transmission they re-disconnect, saving a lot of energy. Also in this case, there is an huge problem related to the scalability; by considering the survey by Boisguene et al. \cite{boisguene} and in according to what declared from 3GPP - in a context where there is a large number of devices and a fixed number of available subcarriers to be allocated, the resources are not guaranteed even with successful random access procedures.
+      
+      Examples of application are related to the contexts that need performance, for example intruder and fire alarms for homes and commercial properties or connected personal appliances measuring health parameters. Contexts with a large number of devices are not preferred due to scalability problems previously discussed.
+      \subsubsection{LoRa\textup{\textregistered}}
+      LoRa\textup{\textregistered} (Long Range) is the physical proprietary radio modulation technique; it is based on spread spectrum techniques derived from chirp spread spectrum (CSS) - that we will explain in the following section - LoRaWAN, instead, define the software communication protocol and system architecture. The development of this protocol is managed by the open, non-profit LoRa Alliance. As introduced, the physical layer is proprietary by Samtech, while the MAC protocol (LoRaWAN) is public.
+      
+      Let's go deeper into the physical layer; as introduced, LoRa\textup{\textregistered} uses a spread spectrum modulation derivate of CSS modulation, which uses a modulation to transmit over large distances in the 868MHz band - LoRaWAN includes a scalable bandwidth (125, 250 or 500 kHz), and based on the bandwidth, a variable spreading factor is chosen to spread the signal to make it more robust to noise. In particular, the signal has constantly increasing (or decreasing) frequency that is used to encode a symbol (chirp), which is basically a sequence of bits, but in this case is the main transmission component.
+      
+      The duration of a chirp is \[ T_{sym} = \frac{2^{SF}}{BW} \] where SF is the spreading factor and BW is the bandwidth. It's clear that choosing an higher SF we will have easiest decoding but longer transmission (a symbol is more longer). An interesting analysis has been conducted by Reynders and Pollin \cite{reynders}, which show that although CSS is robust against interference and has a scalable data rate, the timebandwidth footprint is significantly higher than the footprint of the narrowband solution. This let us believe that LoRaWAN isn't the right solution for every topology and network architecture.
+      
+      There are a lot of LoRa\textup{\textregistered} applications, just think that an useful application of this protocol can be found in Covid-19 prevention with solutions able to assist with contact tracing, ensuring healthcare regulation compliance in the workplace and addressing the needs of medical professionals. Others applications regard smart: building, industrial control, environment and so on.
+      \subsubsection{Comparison between SigFox, NB-IoT and LoRa\textup{\textregistered}}
+      After introduced each protocol we can compare them in order to understand which one is better and in which context. In the Fig. 3 it's possible to see a comparison between all the previously explained protocol.
+      \begin{figure}[h!]
+        \includegraphics[width=0.8\linewidth]{img/comparison.png}
+        \caption{Comparison between LPWAN technologies by Mekki et al. \cite{mekki}}
+        \label{fig:comparison}
+    \end{figure}
+      
+      Starting from coverage and capacity considerations we found an analysis conducted by Vejlgaard et al. \cite{vejlgaard} in a scenario covering 8000 \({km}^2\) in Denmark which perfectly fit our survey. The aim of the analysis is to consider the indoor performance in this scenario: all the three technologies cover more than 95\% of such users. Anyway there are some considerations about limits imposed by technologies:
+      \begin{itemize}
+      \item \textbf{SigFox}: limited in downlink due to blocking and duty cycle violations of the 868 MHz ISM band;
+      \item \textbf{LoRa\textup{\textregistered}}: can be operated in an unacknowledged mode, but all devices will utilize the most robust communication increasing the uplink collision probability. In particular, LoRa has lower performance than SigFox in uplink but provides lower blocking probability.
+      \item \textbf{NB-IoT}: seems to be the best choice in this context since it has best coverage and use of link adaption, while the only drawback it the longest time on air causing possible interference.
+      \end{itemize}
+      
+      Other considerations can be done on the energy consumed for the transmission. We know that each device must be equipped of a battery to work and sometimes these batteries may not be rechargeable, so we will present an overview based on power consumption and battery life. In detail, a study conducted by the university of Belgium \cite{belgium} shows that message transmission and current consumption of idle period is the main contributor for the overall battery lifetime and the preferred technology is the LoRaWAN respect to SigFox and NB-IoT; while SigFox is the most power consuming protocol, this because the structure of the protocol require that each message must be sent multiple time and it is delivered to multiple base station, creating in this way an huge amount of packets that can be avoid using other technologies. Anyway we need to consider that NB-IoT is the most efficient protocol, so, it can be seen as a good compromise between energy efficiency and performance, without taking care of reliability.
+      
+      Finally, we can confirm that the choice on which is the best LP-WAN protocol is strictly related on which are the requirement and the constraints, we may want to guarantee a good performance without take care of consumption and choose for NB-IoT, or we may just want to reduce power consumption and choose for LoRa; every choice is context dependent.
+      
+    \subsection{Energy conservation \& harvesting}
+    After discussing about recent trends in Low Power Wireless Networking protocols we will now introduce some concept that constantly recurs in the IoT context: energy conservation and harvesting. 
+    \subsubsection{Energy conservation} 
+    It is a critical point, as we have seen multiple protocols aim at conserve energy by applying LPL or idle state such as the case of BLE. The discussion here is about the possibility to introduce some component, directly placed on the the Microcontroller, able to "wake-up" the device whenever it receives a packet: Wake-up Radio (WUR). A WUR is basically a second radio that is not used for communication but serves as a switch to notify the main radio of an upcoming packet. This component stays always on but consumes energy in order of tens of \(\mu\)W, which is a quantity smaller than the energy consumed by the main radio when is in a sleep state. The time that occurs from the detection of a signal and the activation of the main radio is really short in order to permit to the Microcontroller to correct receives packets. The only problems here, which is the same of LPL, is related to the unintended wake-ups caused by the inability to selectively address a node, or to noise of the received packets. Different categories of WUR exist:
+    \begin{itemize}
+    \item \textit{Directed vs. Broadcast Wake-up}: for the first class, the target node ID is included in the wake-up signal and this is useful in order to avoid unintended wake-up and reduce energy spent in overhearing; the second class, instead, awakes all neighborhood but requires only detection of energy on channel, instead of the decoding of a packet - clearly in this case more unintended wake-up will happens causing less energy savings.
+    \item \textit{In-band vs. Out-of-band}: for the first class the main radio and the WUR use the same frequency band and can share also the same antenna, while the second class need two different antennas since the main antenna and the wake-up antenna operates at two different frequencies.
+    \item \textit{Active vs. passive}: the first class need continuous power supply but has a better sensitivity and a common design; the second class harvest the energy necessary to their operation from various sources (solar, thermal, RF).
+    \end{itemize}
+    \subsubsection{Energy harvesting}
+    It is the process of convert energy that is obtained from external energy sources such as wind, thermal, kinetic and solar energy into electricity; an example is given by the passive WUR. Particularly interesting is the passive WUR which harvest energy from the RF, in this case the device battery-less: in traditional RF systems, the transmitter is attached to a power source, which is used to generate the signal sent to the receiver; in a backscatter communication the transmitter is not connected to the power but uses the received signal to power up the circuits and answer to the device. This is the principle of passive RFID.
+    
+    Another interesting technology for energy harvesting is the so called \textit{Simultaneous Wireless Information and Power Transfer (SWIPT)}, as is possible to think by looking at the name, this technology enable the simultaneous transmission over the air of both energy and information. Practically, a device will transmit/receive both signals using two possible approaches:
+    \begin{itemize}
+    \item \textit{Separated receiver}: there are two separate antennas - one for the energy harvesting (EH) and one for the information decoding (ID) working on different channels.
+    \item \textit{Integrated receiver}: in this case there is no separate antenna for information decoding and energy harvesting, but a modulation/scheduling of power and data is required; two main types of architecture exist: Time Switching (TS), where a switcher switches from EH to ID periodically; Power Switching (PS), where the signal is split using a power splitter with one part of signal for EH and the other for ID - clearly this approach is more complicated.
+    \end{itemize}
+     Other kind of SWIPT architectures are in continuous development since it seems to be a good resolution to the problem of battery constraints in IoT context, anyway the performance of the network strictly depend by the antennas and the protocols used.
+    \section{Conclusion}
+    The survey can be useful to better understand the recent trends in Low Power Wireless Networking, different kind of protocols has been presented. In particular, the discussion of LP-WAN protocols highlighted the problems related to the scalability in this context. Bluetooth, BLE and his newer version have adapted their usage in the IoT context with excellent results, as shown by Siekkinen et al. \cite{siekkinen} BLE consumes extremely little energy compared to 802.15.4 but is subject to various constraints. The survey didn't cover any security aspects, which still seems to be a problem in this context due to the huge power consumption constraints; the introduction of SWIPT and WUR may encourage manufacturers to increase the level of security of devices, without no more taking care of batteries life.
+   
+    \bibliographystyle{ieeetr}
+    \bibliography{biblio_ref}
+    
+    \appendix
+\section{Online Resources}
+
+\begin{itemize}
+\item {\verb|Apple iBeacon|}: \url{https://developer.apple.com/ibeacon/}
+\item {\verb|Amazon AWS for IoT|}: \url{https://aws.amazon.com/it/iot/}
+\item {\verb|Microsoft Azure for IoT|}: \url{https://azure.microsoft.com/en-us/overview/iot/}
+\item {\verb|SigFox|}: \url{https://sigfox.com/}
+\item \textregistered{\verb|Semtech LoRa applications|}: \url{https://semtech.com/lora/lora-applications}
+
+\end{itemize}
+
+\end{document}
+\endinput
+%%
+%% End of file `sample-sigconf.tex'.
